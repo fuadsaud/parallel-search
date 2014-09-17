@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
 
-import im.fuad.rit.concpar.p1.ParallelGrep;
+import im.fuad.rit.concpar.p1.ParallelSearch;
 
 class Search {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ class Search {
             return;
         }
 
-        new ParallelGrep(arguments).call();
+        new ParallelSearch(arguments).call();
     }
 
     public static void usage() {

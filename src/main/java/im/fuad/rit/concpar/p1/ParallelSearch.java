@@ -19,12 +19,12 @@ import im.fuad.rit.concpar.p1.ReadFile;
 import im.fuad.rit.concpar.p1.ReportMatches;
 import im.fuad.rit.concpar.p1.Mediator;
 
-public class ParallelGrep implements Callable<Boolean> {
+public class ParallelSearch implements Callable<Boolean> {
     private List<String> filenames;
     private List<String> patterns;
     private Mediator mediator;
 
-    public ParallelGrep(List<String> args) {
+    public ParallelSearch(List<String> args) {
         this.filenames = Arrays.asList(args.get(0).split(","));
         this.patterns  = Arrays.asList(args.get(1).split(","));
         this.mediator = new Mediator();

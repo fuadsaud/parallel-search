@@ -1,0 +1,4 @@
+- fix regex matching
+- remove debugging
+- make sure error cases comply
+- make build compliant to specification

@@ -18,8 +18,9 @@ class Search {
 
     public static void usage() {
         System.out.println("USAGE:");
-        System.out.println("java Search <FILELIST> <WORDLIST>");
-        System.out.println("<FILELIST>: list of comma separated file paths to be searched");
-        System.out.println("<WORDLIST>: list of comma separated words to be searched for");
+        System.out.println("\tjava Search <FILELIST> <WORDLIST>");
+        System.out.println("\t\t<FILELIST>: list of comma separated file paths to be searched");
+        System.out.println("\t\t<WORDLIST>: list of comma separated words to be searched for");
+        System.out.println("\n\t\tExample: java Search file1,../file2 word1,word2");
     }
 }

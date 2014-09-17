@@ -5,7 +5,7 @@ class WordOccurrence {
     private String filename;
 
     public WordOccurrence(String text, String filename) {
-        this.text = text;
+        this.text = text.toLowerCase();
         this.filename = filename;
     }
 

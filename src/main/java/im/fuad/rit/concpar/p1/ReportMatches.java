@@ -17,7 +17,7 @@ class ReportMatches implements Callable<Boolean> {
     private Mediator mediator;
 
     public ReportMatches(String pattern, Mediator mediator) {
-        this.pattern = pattern;
+        this.pattern = pattern.toLowerCase();
         this.mediator = mediator;
     }
 

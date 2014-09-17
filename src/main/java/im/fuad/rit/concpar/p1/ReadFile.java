@@ -7,19 +7,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 
-class ReadFile implements Runnable {
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import im.fuad.rit.concpar.p1.WordOccurrence;
+import im.fuad.rit.concpar.p1.Mediator;
+
+/**
+ * This class defines a task for reading files, extracting words from it and
+ * submitting these words to a given mediator object. Words are submitted only
+ * once, even if multiple ocurrences are found.
+ *
+ * @author Fuad Saud <ffs3415@rit.edu>
+ */
+class ReadFile implements Callable<Boolean> {
+    private final Pattern WORDS_PATTERN = Pattern.compile("\\w+");
+
+    private String filename;
     private BufferedReader input;
-    private Queue<String> toBeProcessed;
+    private Mediator mediator;
     private HashMap<String, Boolean> words;
 
-    public ReadFile(BufferedReader input, Queue<String> toBeProcessed) {
+    public ReadFile(String filename, BufferedReader input, Mediator mediator) {
+        this.filename = filename;
         this.input = input;
-        this.toBeProcessed = toBeProcessed;
+        this.mediator = mediator;
         this.words = new HashMap<String, Boolean>();
     }
 
-    public void run() {
+    public Boolean call() {
         String line;
         List<String> lineWords;
 
@@ -29,18 +47,31 @@ class ReadFile implements Runnable {
 
                 lineWords = new ArrayList<String>(Arrays.asList(line.split(" ")));
 
-                for (String word : lineWords) {
-                    if (words.containsKey(word)) {
-                        toBeProcessed.add(word);
+                // lineWords = new ArrayList<String>();
+                // Matcher matcher = WORDS_PATTERN.matcher(line);
 
-                        System.out.println("enq: " + word);
+                // if (matcher.find()) {
+                //     for (int i = 0; i < matcher.groupCount(); i++) {
+                //         lineWords.add(matcher.group(i));
+
+                //         System.out.println("SDFHIDSHF: " + matcher.group(i));
+                //     }
+                // }
+
+                for (String word : lineWords) {
+                    if (!words.containsKey(word)) {
+                        mediator.put(new WordOccurrence(word, this.filename));
                     }
 
                     words.put(word, true);
                 }
             }
+
+            return true;
         } catch (IOException e) {
-            System.out.println("BOOM");
+            e.printStackTrace();
+
+            return false;
         }
     }
 }

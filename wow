@@ -1,0 +1,2 @@
+hashCode() (javadoc) must also be consistent (if the object is not modified in
+terms of equals(), it must keep returning the same value). tres

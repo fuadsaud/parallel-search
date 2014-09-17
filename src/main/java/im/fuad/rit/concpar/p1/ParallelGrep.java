@@ -6,64 +6,66 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 
+import im.fuad.rit.concpar.p1.WordOccurrence;
 import im.fuad.rit.concpar.p1.ReadFile;
 import im.fuad.rit.concpar.p1.ReportMatches;
+import im.fuad.rit.concpar.p1.Mediator;
 
-class ParallelGrep implements Callable<Boolean> {
-    public static final String END_SIGNAL = "END_SIGNAL";
-
+public class ParallelGrep implements Callable<Boolean> {
     private List<String> filenames;
-    private BlockingQueue<String> words;
+    private List<String> patterns;
+    private Mediator mediator;
 
-    public ParallelGrep(List<String> filenames) {
-        this.filenames = filenames;
-        this.words = new LinkedBlockingQueue<String>();
+    public ParallelGrep(List<String> args) {
+        this.filenames = Arrays.asList(args.get(0).split(","));
+        this.patterns  = Arrays.asList(args.get(1).split(","));
+        this.mediator = new Mediator();
+    }
+
+    private BufferedReader readerForFilename(String filename) throws IllegalArgumentException {
+        try {
+            return new BufferedReader(
+                    new FileReader(
+                        new File(filename)));
+        } catch(FileNotFoundException e) {
+            throw new IllegalArgumentException("FILE DOES NOT EXIST");
+        }
     }
 
     public Boolean call() {
-        List<Thread> readers = new ArrayList<Thread>();
+        ExecutorService reporters = Executors.newFixedThreadPool(patterns.size());
+
+        for (String pattern : patterns) {
+            reporters.submit(new ReportMatches(pattern, mediator));
+        }
+
+        ExecutorService readers = Executors.newFixedThreadPool(filenames.size());
+
+        for (String filename : filenames) {
+            readers.submit(
+                    new ReadFile(filename, readerForFilename(filename), mediator));
+        }
 
         try {
-            for (String filename : filenames) {
-                Thread t =
-                    new Thread(
-                            new ReadFile(
-                                new BufferedReader(
-                                    new FileReader(
-                                        new File(filename))), words));
+            readers.shutdown();
+            readers.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-                readers.add(t);
+            mediator.shutdown();
 
-                t.start();
-            }
-
-            for (Integer i = 0; i < REPORTERS_COUNT; i++) {
-
-            }
-
-            Thread reporter = new Thread(new ReportMatches(words));
-
-            reporter.start();
-
-            try {
-                for (Thread reader : readers) reader.join();
-
-                words.put(END_SIGNAL);
-
-                reporter.join();
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }
-
-            return true;
-        } catch (FileNotFoundException e) {
-                e.printStackTrace();
-
-            return false;
+            reporters.shutdown();
+            reporters.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch(InterruptedException e){
+            e.printStackTrace();
         }
+
+        return true;
     }
 }

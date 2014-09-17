@@ -1,30 +1,52 @@
 package im.fuad.rit.concpar.p1;
 
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Callable;
 
-class ReportMatches implements Runnable {
-    private BlockingQueue<String> matches;
+import im.fuad.rit.concpar.p1.Mediator;
+import im.fuad.rit.concpar.p1.WordOccurrence;
 
-    public ReportMatches(BlockingQueue<String> matches) {
-        this.matches = matches;
+/**
+ * This class defines a task for reporting matches during text file search for a given word.
+ * Occurrences of the word to be reported are retrieved through a mediator object given at
+ * construction time.
+ *
+ * @author Fuad Saud <ffs3415@rit.edu>
+ */
+class ReportMatches implements Callable<Boolean> {
+    private String pattern;
+    private Mediator mediator;
+
+    public ReportMatches(String pattern, Mediator mediator) {
+        this.pattern = pattern;
+        this.mediator = mediator;
     }
 
-    public void run() {
+    public Boolean call() {
+        debug("REPORTING");
+
         while (true) {
             try {
-                String word = matches.take();
+                WordOccurrence match = mediator.get(this.pattern);
 
-                if (word == ParallelGrep.END_SIGNAL) {
-                    matches.add(word);
+                // Signal that no more occurrences of this word are to be submitted.
+                if (match == null) { return true; }
 
-                    return;
-                }
+                debug("FREAKING FOUND IT MOTHAFOCKA");
 
-                System.out.println("deq: " + word);
+                log(match);
+
             } catch(InterruptedException e) {
                 e.printStackTrace();
-            }
 
+                return false;
+            }
         }
+    }
+
+    private void log(WordOccurrence occurrence) { System.out.println(occurrence); }
+
+    private void debug(String title) { debug(title, ""); }
+    private void debug(String title, String body) {
+        System.err.println("[" + title + "(" + this.pattern + ")] " + body);
     }
 }

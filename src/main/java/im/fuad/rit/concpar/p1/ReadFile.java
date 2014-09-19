@@ -45,11 +45,13 @@ class ReadFile implements Callable<Boolean> {
                 lineWords = Arrays.asList(line.split(WORDS_SEPARATOR));
 
                 for (String word : lineWords) {
-                    if (!words.containsKey(word)) {
+                    String key = word.toLowerCase();
+
+                    if (!words.containsKey(key)) {
                         mediator.put(new WordOccurrence(word, this.filename));
                     }
 
-                    words.put(word, true);
+                    words.put(key, true);
                 }
             }
 

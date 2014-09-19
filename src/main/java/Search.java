@@ -13,7 +13,17 @@ class Search {
             return;
         }
 
-        new ParallelSearch(arguments).call();
+
+        try {
+            new ParallelSearch(
+                    Arrays.asList(arguments.get(0).split(",")),
+                    Arrays.asList(arguments.get(1).split(","))).call();
+        } catch(IllegalArgumentException e) {
+            logError(e.getMessage());
+
+            System.exit(1);
+        }
+
     }
 
     public static void usage() {
@@ -23,4 +33,9 @@ class Search {
         System.out.println("\t\t<WORDLIST>: list of comma separated words to be searched for");
         System.out.println("\n\t\tExample: java Search file1,../file2 word1,word2");
     }
+
+    public static void logError(String message) {
+        System.out.println(message);
+    }
+
 }

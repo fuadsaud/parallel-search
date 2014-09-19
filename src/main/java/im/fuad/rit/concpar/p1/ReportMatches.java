@@ -22,16 +22,18 @@ class ReportMatches implements Callable<Boolean> {
     }
 
     public Boolean call() {
-        debug("REPORTING");
+        debug("Starting...");
 
         while (true) {
             try {
                 WordOccurrence match = mediator.get(this.pattern);
 
                 // Signal that no more occurrences of this word are to be submitted.
-                if (match == null) { return true; }
+                if (match == null) {
+                    debug("Terminating...");
 
-                debug("FREAKING FOUND IT MOTHAFOCKA");
+                    return true;
+                }
 
                 log(match);
 
@@ -45,8 +47,7 @@ class ReportMatches implements Callable<Boolean> {
 
     private void log(WordOccurrence occurrence) { System.out.println(occurrence); }
 
-    private void debug(String title) { debug(title, ""); }
-    private void debug(String title, String body) {
-        System.err.println("[" + title + "(" + this.pattern + ")] " + body);
+    private void debug(String message) {
+        ParallelSearch.debug("[REPORTER (" + this.pattern + ")] " + message);
     }
 }

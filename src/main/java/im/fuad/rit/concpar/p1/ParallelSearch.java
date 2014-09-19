@@ -20,6 +20,16 @@ import im.fuad.rit.concpar.p1.ReportMatches;
 import im.fuad.rit.concpar.p1.Mediator;
 
 public class ParallelSearch implements Callable<Boolean> {
+    private static Boolean debug = false;
+
+    static {
+        debug = System.getenv("DEBUG") != null;
+    }
+
+    public static void debug(String message) {
+        if (debug) System.err.println("[DEBUG] " + message);
+    }
+
     private List<String> filenames;
     private List<String> patterns;
     private Mediator mediator;

@@ -42,7 +42,7 @@ class Mediator {
     public synchronized void put(WordOccurrence occurrence) {
         if (occurrence == null) return;
 
-        System.err.println("[PUT] " + occurrence);
+        ParallelSearch.debug("[PUT] " + occurrence);
 
         Queue<WordOccurrence> q = occurrences.get(occurrence.getText());
 
@@ -70,7 +70,7 @@ class Mediator {
             if (this.shutdown) return null;
 
             Queue<WordOccurrence> q = occurrences.get(text);
-            System.err.println("[POLLING FOR] " + text + " " + q.isEmpty());
+            debug("[GET] " + text + " " + (q.isEmpty() ? "wait..." : "bingo!"));
 
             wait();
         }
@@ -90,5 +90,9 @@ class Mediator {
         this.shutdown = true;
 
         notifyAll();
+    }
+
+    private synchronized void debug(String message) {
+        ParallelSearch.debug(message);
     }
 }

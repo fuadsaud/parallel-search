@@ -40,14 +40,10 @@ public class ParallelSearch implements Callable<Boolean> {
         this.mediator = new Mediator();
     }
 
-    private BufferedReader readerForFilename(String filename) throws IllegalArgumentException {
-        try {
-            return new BufferedReader(
-                    new FileReader(
-                        new File(filename)));
-        } catch(FileNotFoundException e) {
-            throw new IllegalArgumentException("FILE DOES NOT EXIST");
-        }
+    private BufferedReader readerForFilename(String filename) throws FileNotFoundException {
+        return new BufferedReader(
+                new FileReader(
+                    new File(filename)));
     }
 
     public Boolean call() {
@@ -60,8 +56,15 @@ public class ParallelSearch implements Callable<Boolean> {
         ExecutorService readers = Executors.newFixedThreadPool(filenames.size());
 
         for (String filename : filenames) {
-            readers.submit(
-                    new ReadFile(filename, readerForFilename(filename), mediator));
+            try {
+                BufferedReader reader = readerForFilename(filename);
+
+                readers.submit(new ReadFile(filename, reader, mediator));
+            } catch (FileNotFoundException e) {
+                logError(filename + ": no such file exists");
+                continue;
+            }
+
         }
 
         try {
@@ -78,4 +81,6 @@ public class ParallelSearch implements Callable<Boolean> {
 
         return true;
     }
+
+    private void logError(String message) { System.err.println(message); }
 }

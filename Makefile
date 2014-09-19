@@ -3,7 +3,7 @@ SOURCES   = $(wildcard  src/main/java/**/**.java)
 SRCDIR    = src/main/java
 OUTDIR    = bin/
 MAINFILE  = $(SRCDIR)/Search.java
-INPUTFILES = ../test_inputs/whatever,../test_inputs/numeros
+INPUTFILES = ../test_inputs/whatever,../test_inputs/numeros,wowlo
 PATTERNS  = cinco,mé,grazadeus,tres,know
 
 run: classes

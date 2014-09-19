@@ -4,7 +4,7 @@ SRCDIR    = src/main/java
 OUTDIR    = bin/
 MAINFILE  = $(SRCDIR)/Search.java
 INPUTFILES = ../wow,../lol
-PATTERNS  = cinco,mé,grazadeus,tres
+PATTERNS  = cinco,mé,grazadeus,tres,know
 
 run: classes
 	cd bin; java Search $(INPUTFILES) $(PATTERNS)

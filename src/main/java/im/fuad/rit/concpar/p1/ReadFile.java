@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.Queue;
 import java.util.concurrent.Callable;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import im.fuad.rit.concpar.p1.WordOccurrence;
 import im.fuad.rit.concpar.p1.Mediator;
 
@@ -23,7 +20,7 @@ import im.fuad.rit.concpar.p1.Mediator;
  * @author Fuad Saud <ffs3415@rit.edu>
  */
 class ReadFile implements Callable<Boolean> {
-    private final Pattern WORDS_PATTERN = Pattern.compile("\\w+");
+    private final String WORDS_SEPARATOR = "[^a-zA-Z]";
 
     private String filename;
     private BufferedReader input;
@@ -45,18 +42,7 @@ class ReadFile implements Callable<Boolean> {
             while ((line = input.readLine()) != null) {
                 if (line.isEmpty()) continue;
 
-                lineWords = new ArrayList<String>(Arrays.asList(line.split(" ")));
-
-                // lineWords = new ArrayList<String>();
-                // Matcher matcher = WORDS_PATTERN.matcher(line);
-
-                // if (matcher.find()) {
-                //     for (int i = 0; i < matcher.groupCount(); i++) {
-                //         lineWords.add(matcher.group(i));
-
-                //         System.out.println("SDFHIDSHF: " + matcher.group(i));
-                //     }
-                // }
+                lineWords = Arrays.asList(line.split(WORDS_SEPARATOR));
 
                 for (String word : lineWords) {
                     if (!words.containsKey(word)) {

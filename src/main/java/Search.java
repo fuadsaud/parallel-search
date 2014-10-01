@@ -1,7 +1,7 @@
 import java.util.Arrays;
 import java.util.List;
 
-import im.fuad.rit.concpar.p1.ParallelSearch;
+import im.fuad.rit.copads.p1.ParallelSearch;
 
 class Search {
     public static void main(String[] args) {
@@ -23,7 +23,6 @@ class Search {
 
             System.exit(1);
         }
-
     }
 
     public static void usage() {
@@ -37,5 +36,4 @@ class Search {
     public static void logError(String message) {
         System.out.println(message);
     }
-
 }
